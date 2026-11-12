@@ -1,0 +1,29 @@
+{
+  "template": "yue2_text_to_music.api.json",
+  "source": "ComfyUI 官方範本 audio_yue2_text2music（Text to Music (YuE2) 子圖，ABC Planning 開啟），由 MV 自動工坊轉為 API 格式",
+  "params": {
+    "ckpt_name": [{ "node": "15", "input": "ckpt_name" }],
+    "style": [
+      { "node": "24", "input": "style" },
+      { "node": "25", "input": "style" }
+    ],
+    "lyrics": [
+      { "node": "24", "input": "lyrics" },
+      { "node": "25", "input": "lyrics" }
+    ],
+    "plan_mode": [
+      { "node": "24", "input": "mode" },
+      { "node": "25", "input": "mode" }
+    ],
+    "seed": [
+      { "node": "24", "input": "seed" },
+      { "node": "25", "input": "seed" },
+      { "node": "8", "input": "seed" }
+    ],
+    "max_duration": [{ "node": "25", "input": "max_duration" }],
+    "filename_prefix": [{ "node": "10", "input": "filename_prefix" }]
+  },
+  "outputs": {
+    "audio": { "node": "10", "kind": "audio" }
+  }
+}

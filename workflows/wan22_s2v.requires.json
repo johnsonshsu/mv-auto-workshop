@@ -1,0 +1,77 @@
+{
+  "label": "Wan 2.2 S2V 對嘴",
+  "note": "models 的 param 是對應表中的參數名稱；本機檔名與 file 不同但符合 pattern 時，會自動改用本機的檔名。",
+  "min_comfyui": "0.36.0",
+  "nodes": [
+    "UNETLoader",
+    "LoraLoaderModelOnly",
+    "ModelSamplingSD3",
+    "CLIPLoader",
+    "CLIPTextEncode",
+    "VAELoader",
+    "AudioEncoderLoader",
+    "AudioEncoderEncode",
+    "LoadAudio",
+    "LoadImage",
+    "WanSoundImageToVideo",
+    "WanSoundImageToVideoExtend",
+    "KSampler",
+    "LatentCut",
+    "LatentConcat",
+    "VAEDecode",
+    "ImageFromBatch",
+    "LoadVideo",
+    "GetVideoComponents",
+    "VHS_VideoCombine"
+  ],
+  "custom_node_packs": [
+    "ComfyUI-VideoHelperSuite"
+  ],
+  "models": [
+    {
+      "file": "wan2.2_s2v_14B_fp8_scaled.safetensors",
+      "pattern": "(?i)wan2[._]2[._]s2v",
+      "folder": "models/diffusion_models",
+      "loader_node": "UNETLoader",
+      "loader_input": "unet_name",
+      "param": "diffusion_model",
+      "url": "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/diffusion_models/wan2.2_s2v_14B_fp8_scaled.safetensors"
+    },
+    {
+      "file": "wan2.2_t2v_lightx2v_4steps_lora_v1.1_high_noise.safetensors",
+      "pattern": "(?i)wan2[._]2.*lightx2v.*high_noise",
+      "folder": "models/loras",
+      "loader_node": "LoraLoaderModelOnly",
+      "loader_input": "lora_name",
+      "param": "lora",
+      "url": "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/loras/wan2.2_t2v_lightx2v_4steps_lora_v1.1_high_noise.safetensors"
+    },
+    {
+      "file": "umt5_xxl_fp8_e4m3fn_scaled.safetensors",
+      "pattern": "(?i)umt5_xxl_fp8",
+      "folder": "models/text_encoders",
+      "loader_node": "CLIPLoader",
+      "loader_input": "clip_name",
+      "param": "text_encoder",
+      "url": "https://huggingface.co/Comfy-Org/Wan_2.1_ComfyUI_repackaged/resolve/main/split_files/text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors"
+    },
+    {
+      "file": "wan_2.1_vae.safetensors",
+      "pattern": "(?i)^wan_2[._]1_vae",
+      "folder": "models/vae",
+      "loader_node": "VAELoader",
+      "loader_input": "vae_name",
+      "param": "vae",
+      "url": "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/vae/wan_2.1_vae.safetensors"
+    },
+    {
+      "file": "wav2vec2_large_english_fp16.safetensors",
+      "pattern": "(?i)wav2vec2_large_english",
+      "folder": "models/audio_encoders",
+      "loader_node": "AudioEncoderLoader",
+      "loader_input": "audio_encoder_name",
+      "param": "audio_encoder",
+      "url": "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/audio_encoders/wav2vec2_large_english_fp16.safetensors"
+    }
+  ]
+}

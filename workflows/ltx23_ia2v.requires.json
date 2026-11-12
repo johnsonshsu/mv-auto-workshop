@@ -1,0 +1,69 @@
+{
+  "label": "LTX-2.3 對嘴",
+  "note": "models 的 param 是對應表中的參數名稱；本機檔名與 file 不同但符合 pattern 時，會自動改用本機的檔名。",
+  "min_comfyui": "0.36.0",
+  "nodes": [
+    "CheckpointLoaderSimple",
+    "LoraLoaderModelOnly",
+    "LTXAVTextEncoderLoader",
+    "LTXVAudioVAELoader",
+    "LatentUpscaleModelLoader",
+    "LoadImage",
+    "LoadAudio",
+    "LTXVPreprocess",
+    "LTXVConditioning",
+    "TrimAudioDuration",
+    "LTXVAudioVAEEncode",
+    "SetLatentNoiseMask",
+    "SolidMask",
+    "EmptyLTXVLatentVideo",
+    "LTXVImgToVideoInplace",
+    "LTXVConcatAVLatent",
+    "LTXVSeparateAVLatent",
+    "LTXVCropGuides",
+    "LTXVLatentUpsampler",
+    "SamplerCustomAdvanced",
+    "ManualSigmas",
+    "VAEDecodeTiled",
+    "VHS_VideoCombine"
+  ],
+  "custom_node_packs": ["ComfyUI-VideoHelperSuite"],
+  "models": [
+    {
+      "file": "ltx-2.3-22b-dev-fp8.safetensors",
+      "pattern": "(?i)ltx-2\\.3-22b-dev",
+      "folder": "models/checkpoints",
+      "loader_node": "CheckpointLoaderSimple",
+      "loader_input": "ckpt_name",
+      "param": "checkpoint",
+      "url": "https://docs.comfy.org/tutorials/video/ltx/ltx-2-3"
+    },
+    {
+      "file": "gemma_3_12B_it_fp4_mixed.safetensors",
+      "pattern": "(?i)gemma_3_12b_it",
+      "folder": "models/text_encoders",
+      "loader_node": "LTXAVTextEncoderLoader",
+      "loader_input": "text_encoder",
+      "param": "text_encoder",
+      "url": "https://docs.comfy.org/tutorials/video/ltx/ltx-2-3"
+    },
+    {
+      "file": "ltx_2.3_22b_distilled_1.1_lora_dynamic_fro09_avg_rank_111_bf16.safetensors",
+      "pattern": "(?i)ltx[-_]2\\.3.*distilled.*lora",
+      "folder": "models/loras",
+      "loader_node": "LoraLoaderModelOnly",
+      "loader_input": "lora_name",
+      "param": "lora",
+      "url": "https://docs.comfy.org/tutorials/video/ltx/ltx-2-3"
+    },
+    {
+      "file": "ltx-2.3-spatial-upscaler-x2-1.1.safetensors",
+      "pattern": "(?i)ltx-2\\.3-spatial-upscaler-x2",
+      "folder": "models/latent_upscale_models",
+      "loader_node": "LatentUpscaleModelLoader",
+      "loader_input": "model_name",
+      "param": "upscaler",
+      "url": "https://docs.comfy.org/tutorials/video/ltx/ltx-2-3"
+    }
+  ]
+}

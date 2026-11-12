@@ -1,0 +1,86 @@
+{
+  "label": "InfiniteTalk 對嘴",
+  "note": "models 的 param 是對應表中的參數名稱；本機檔名與 file 不同但符合 pattern 時，會自動改用本機的檔名。",
+  "requires_argv": [
+    {
+      "flag": "--disable-dynamic-vram",
+      "reason": "ComfyUI 開啟動態顯示記憶體時，WanVideoWrapper 套用 LoRA 會讓 ComfyUI 當掉",
+      "fix": "請在 ComfyUI Desktop 的啟動參數加上 --disable-dynamic-vram 後重新啟動"
+    }
+  ],
+  "nodes": [
+    "LoadImage",
+    "LoadAudio",
+    "DownloadAndLoadWav2VecModel",
+    "MultiTalkWav2VecEmbeds",
+    "MultiTalkModelLoader",
+    "WanVideoLoraSelect",
+    "WanVideoBlockSwap",
+    "WanVideoModelLoader",
+    "WanVideoVAELoader",
+    "CLIPVisionLoader",
+    "WanVideoClipVisionEncode",
+    "WanVideoTextEncodeCached",
+    "WanVideoImageToVideoMultiTalk",
+    "WanVideoSampler",
+    "WanVideoPassImagesFromSamples",
+    "VHS_VideoCombine"
+  ],
+  "custom_node_packs": ["ComfyUI-WanVideoWrapper（kijai）", "ComfyUI-VideoHelperSuite"],
+  "models": [
+    {
+      "pattern": "(?i)infinitetalk",
+      "file": "Wan2_1-InfiniteTalk-Single_fp8_e4m3fn_scaled_KJ.safetensors",
+      "folder": "models/diffusion_models",
+      "loader_node": "MultiTalkModelLoader",
+      "loader_input": "model",
+      "param": "infinitetalk_model",
+      "url": "https://huggingface.co/Kijai/WanVideo_comfy_fp8_scaled/tree/main/InfiniteTalk"
+    },
+    {
+      "pattern": "(?i)wan2[._]1.*i2v.*480p.*KJ",
+      "file": "Wan2_1-I2V-14B-480p_fp8_e4m3fn_scaled_KJ.safetensors",
+      "folder": "models/diffusion_models",
+      "loader_node": "WanVideoModelLoader",
+      "loader_input": "model",
+      "param": "diffusion_model",
+      "url": "https://huggingface.co/Kijai/WanVideo_comfy_fp8_scaled/tree/main/I2V"
+    },
+    {
+      "pattern": "(?i)lightx2v.*i2v.*480p",
+      "file": "lightx2v_I2V_14B_480p_cfg_step_distill_rank64_bf16.safetensors",
+      "folder": "models/loras",
+      "loader_node": "WanVideoLoraSelect",
+      "loader_input": "lora",
+      "param": "lora",
+      "url": "https://huggingface.co/Kijai/WanVideo_comfy/tree/main/Lightx2v"
+    },
+    {
+      "pattern": "(?i)wan2?[._]1[._]vae",
+      "file": "Wan2_1_VAE_bf16.safetensors",
+      "folder": "models/vae",
+      "loader_node": "WanVideoVAELoader",
+      "loader_input": "model_name",
+      "param": "vae",
+      "url": "https://huggingface.co/Kijai/WanVideo_comfy/blob/main/Wan2_1_VAE_bf16.safetensors"
+    },
+    {
+      "pattern": "(?i)umt5.*enc.*bf16",
+      "file": "umt5-xxl-enc-bf16.safetensors",
+      "folder": "models/text_encoders",
+      "loader_node": "WanVideoTextEncodeCached",
+      "loader_input": "model_name",
+      "param": "text_encoder",
+      "url": "https://huggingface.co/Kijai/WanVideo_comfy/blob/main/umt5-xxl-enc-bf16.safetensors"
+    },
+    {
+      "pattern": "(?i)clip_vision_h",
+      "file": "clip_vision_h.safetensors",
+      "folder": "models/clip_vision",
+      "loader_node": "CLIPVisionLoader",
+      "loader_input": "clip_name",
+      "param": "clip_vision",
+      "url": "https://huggingface.co/Comfy-Org/Wan_2.1_ComfyUI_repackaged/tree/main/split_files/clip_vision"
+    }
+  ]
+}

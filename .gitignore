@@ -1,0 +1,14 @@
+# 虛擬環境（依 README 的「安裝」重新建立）
+.venv/
+# 字幕對齊用的獨立環境（setup_align_env.ps1 產生）
+align-env/
+# 打包產物（build.ps1 產生）
+build/
+dist/
+*.spec
+# 執行與測試時產生的檔案
+__pycache__/
+.pytest_cache/
+test_output/
+# 測試用的影片
+/*.mp4

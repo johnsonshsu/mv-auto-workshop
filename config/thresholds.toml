@@ -1,0 +1,29 @@
+# 硬體門檻（單位 GB）
+# 低於 min → 不通過；介於 min 與 recommended → 可執行但需降規；達到 recommended → 通過。
+# 標示「待實測」的數字是保守估計，會在對應的開發階段以實際執行結果修正。
+
+[yue2]
+label = "YuE2 歌曲生成"
+min_vram = 8
+recommended_vram = 12
+min_ram = 16
+recommended_ram = 32
+source = "待實測。yue2_3b_int8_convrot 檔案約 3.7 GB（官方範本說明）"
+
+[infinitetalk]
+label = "InfiniteTalk 對嘴"
+min_vram = 10
+recommended_vram = 16
+min_ram = 45
+recommended_ram = 64
+degrade_hint = "建議使用 480p，並以分段方式生成"
+source = "社群工作流 Friendly InfiniteTalk Vibe（480p）：最低 8–10 GB VRAM／45 GB RAM，建議 16 GB VRAM／64 GB RAM https://comfy.icu/models/2099806/Friendly-InfiniteTalk-Vibe"
+
+[ltx23]
+label = "LTX-2.3 對嘴"
+min_vram = 16
+recommended_vram = 24
+min_ram = 32
+recommended_ram = 64
+degrade_hint = "建議使用 480p，並縮短單段長度"
+source = "待實測。ltx-2.3-22b-dev-fp8 為 22B 參數的 fp8 模型 https://docs.comfy.org/tutorials/video/ltx/ltx-2-3"

@@ -1,0 +1,13 @@
+{
+  "template": "vocal_separation_demucs.api.json",
+  "source": "audio-separation-nodes-comfyui 的 AudioSeparation（輸出 Bass、Drums、Other、Vocals）；伴奏由前三軌相加。尚未在本機實測",
+  "params": {
+    "audio": [{ "node": "1", "input": "audio" }],
+    "vocals_prefix": [{ "node": "5", "input": "filename_prefix" }],
+    "instrumental_prefix": [{ "node": "6", "input": "filename_prefix" }]
+  },
+  "outputs": {
+    "vocals": { "node": "5", "kind": "audio" },
+    "instrumental": { "node": "6", "kind": "audio" }
+  }
+}

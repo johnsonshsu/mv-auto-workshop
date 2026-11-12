@@ -1,0 +1,35 @@
+name = "主歌–副歌–主歌–副歌–過渡–副歌"
+style_hint = "口語、畫面感強；主歌說故事，副歌重複一句好記的句子"
+rhyme = "每段偶數行押韻，副歌一韻到底"
+
+[[sections]]
+type = "verse"
+lines = 4
+chars_min = 7
+chars_max = 11
+
+[[sections]]
+type = "chorus"
+lines = 4
+chars_min = 6
+chars_max = 10
+
+[[sections]]
+type = "verse"
+lines = 4
+chars_min = 7
+chars_max = 11
+
+[[sections]]
+type = "chorus"
+repeat_of = 2
+
+[[sections]]
+type = "bridge"
+lines = 2
+chars_min = 7
+chars_max = 11
+
+[[sections]]
+type = "chorus"
+repeat_of = 2

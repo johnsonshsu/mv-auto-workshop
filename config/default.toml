@@ -1,0 +1,395 @@
+# MV 自動工坊：預設設定
+# 使用者在設定頁改的值會存到 %APPDATA%\MVAutoWorkshop\settings.json，並覆蓋這裡的同名項目。
+
+[paths]
+projects_root = "D:/MV專案"
+
+[comfyui]
+host = "127.0.0.1"
+# 依序嘗試；Desktop 版預設 8000，Portable 版預設 8188
+ports = [8000, 8188]
+# 上次成功連線的位址（由程式寫入使用者設定）
+last_url = ""
+min_version = "0.36.0"
+# 本 APP 在 ComfyUI output／input 資料夾使用的子資料夾名稱
+output_prefix = "mv_workshop"
+connect_timeout = 3.0
+# 等待 WebSocket 訊息的逾時（秒）；逾時後改查 /history，不代表失敗
+ws_poll_seconds = 5.0
+
+[disk]
+# 專案磁碟最少要有的可用空間（GB）
+min_free_gb = 20
+
+[llm]
+provider = "ollama"            # ollama | claude | openai_compatible
+ollama_url = "http://127.0.0.1:11434"
+ollama_text_model = "qwen3.8:27b"
+ollama_vision_model = "gemma4:12b"
+# 同一階段連續呼叫時模型留在記憶體的時間；階段結束時 APP 會主動卸載，把 VRAM 讓給 ComfyUI
+ollama_keep_alive = "5m"
+claude_model = "claude-opus-5-5"
+openai_base_url = "https://api.openai.com/v1"
+openai_model = ""
+timeout = 300
+# 回傳格式不符時的自動重試次數（不含第一次）
+max_retries = 2
+
+[lyrics]
+# 估算歌曲長度用：每行歌詞約幾秒、每個段落交界的間奏約幾秒
+seconds_per_line = 4.5
+seconds_per_gap = 6.0
+# 每行字數允許超出範本範圍的字數
+char_tolerance = 2
+
+# 歌曲語言。yue2 是寫進 YuE2 風格描述的語言名稱；whisper 是字幕對齊用的語言代碼；
+# rule 是給作詞 LLM 的語言要求；unit 與 length_factor 用來把歌詞範本的「每行字數」換算成這個語言的長度；
+# chinese = true 的語言會自動把簡體字轉成繁體。
+[languages.zh-TW]
+label = "國語"
+yue2 = "Mandarin"
+whisper = "zh"
+rule = "國語。全部使用繁體中文（台灣用字），不可出現簡體字"
+unit = "字"
+length_factor = 1.0
+chinese = true
+
+[languages.en]
+label = "英語"
+yue2 = "English"
+whisper = "en"
+rule = "English. Write natural, idiomatic, singable English lyrics; do not mix in other languages"
+unit = "個英文單字"
+length_factor = 0.7
+chinese = false
+
+[languages.ja]
+label = "日語"
+yue2 = "Japanese"
+whisper = "ja"
+rule = "日本語。自然な日本語の歌詞を、漢字とかなを交えて書くこと。他の言語を混ぜない"
+unit = "個字（漢字或假名各算一個）"
+length_factor = 1.5
+chinese = false
+
+[languages.yue]
+label = "粵語（實驗性）"
+yue2 = "Cantonese"
+whisper = "yue"
+rule = "粵語（廣東話）。用繁體中文書寫，用詞與語法要符合粵語歌詞的習慣，不可出現簡體字"
+unit = "字"
+length_factor = 1.0
+chinese = true
+
+# 聲線選項：value 是寫進 YuE2 風格描述的英文形容詞（最多兩個字）；留空表示交給 LLM 依歌曲內容決定
+[[voices]]
+label = "自動（依歌曲內容決定）"
+value = ""
+
+[[voices]]
+label = "溫暖"
+value = "warm"
+
+[[voices]]
+label = "清亮"
+value = "bright, clear"
+
+[[voices]]
+label = "甜美"
+value = "sweet"
+
+[[voices]]
+label = "輕柔氣音"
+value = "soft, breathy"
+
+[[voices]]
+label = "沙啞"
+value = "husky"
+
+[[voices]]
+label = "渾厚低沉"
+value = "deep, rich"
+
+[[voices]]
+label = "有力"
+value = "powerful"
+
+[[voices]]
+label = "空靈"
+value = "ethereal, airy"
+
+[[voices]]
+label = "青春"
+value = "youthful"
+
+[song]
+language = "zh-TW"
+# 長度模式：auto＝由 AI 決定，唱完為止；max＝不超過 target_seconds
+duration_mode = "auto"
+# 「設定上限」模式的預設上限（秒）
+target_seconds = 150
+# 「自動」模式給 YuE2 的長度上限。歌曲通常會在唱完後自己結束；若碰到上限代表還沒唱完，
+# 會把上限乘以 1.5 再試，最多到 auto_max_limit
+auto_max_seconds = 300
+auto_max_limit = 600
+# 歌曲長度達到上限、可能沒唱完時，結尾加上幾秒的淡出，避免突然中斷
+fade_seconds = 3.0
+# 歌曲生成不合格時換 seed 重試的次數上限
+max_retries = 3
+# 實際長度低於「唱完歌詞估計需要的時間 × 這個比例」視為生成失敗，會換 seed 重試
+min_duration_ratio = 0.5
+
+[yue2]
+workflow = "yue2_text_to_music"
+ckpt_name = "yue2_3b_int8_convrot.safetensors"
+plan_mode = "full"
+# 環境檢查頁「測試工作流」用的長度（秒）
+test_seconds = 10
+
+# 段落類型 → YuE2 歌詞標記。官方文件只列出 Verse、Chorus、Bridge、Outro，
+# 所以導歌與有歌詞的前奏都對應到 Verse；沒有歌詞的段落不會寫進歌詞欄。
+[yue2.tag_map]
+intro = "Verse"
+verse = "Verse"
+prechorus = "Verse"
+chorus = "Chorus"
+bridge = "Bridge"
+outro = "Outro"
+
+[video]
+default_engine = "infinitetalk"     # infinitetalk | ltx23
+default_resolution = "480p"
+# 影片編碼品質（libx264 的 CRF，數字越小畫質越好、檔案越大）
+crf = 16
+# 驅動嘴型的音訊：vocals（分離後的人聲，間奏時不張嘴）或 song（完整歌曲）
+drive_audio = "vocals"
+
+[video.resolutions.480p]
+width = 832
+height = 480
+
+[video.resolutions.720p]
+width = 1280
+height = 720
+
+[engines.infinitetalk]
+label = "InfiniteTalk（外掛版）"
+workflow = "infinitetalk_single"
+fps = 25
+# 單次生成的影格數限制：frame_step × k + frame_offset
+frame_step = 4
+frame_offset = 1
+# 單段長度上下限（秒）。切點優先選段落邊界，其次是人聲靜音處
+max_segment_seconds = 60
+min_segment_seconds = 3
+# 每幾段改回以原始照片起始，抑制人物越來越不像；0 表示不重設。重設只發生在段落邊界或人聲靜音處
+reset_every = 4
+steps = 6
+# 把多少個模型區塊留在系統記憶體；數字越大越省 VRAM、越慢。顯示記憶體不足時會自動改用 oom_blocks_to_swap 重試
+blocks_to_swap = 20
+oom_blocks_to_swap = 40
+frame_window_size = 81
+motion_frame = 9
+negative_prompt = "bright tones, overexposed, static, blurred details, subtitles, worst quality, low quality, JPEG artifacts, ugly, deformed, extra fingers, poorly drawn hands, poorly drawn face"
+default_prompt = "A singer stands in front of a studio microphone and sings with emotion, natural facial expressions, gentle body sway with the music, static camera."
+# 輸入頁用來預估時間：每 1 秒影片要算幾秒（RTX 5090 Laptop、24 GB 的實測值；換了顯示卡請自行調整）
+# 整首 150 秒實測 3 小時 54 分
+[engines.infinitetalk.speed]
+"480p" = 94
+
+[engines.wan22_s2v]
+label = "Wan 2.2 S2V"
+workflow = "wan22_s2v"
+# 模型固定以 16 fps 生成
+fps = 16
+# 一個區塊是 77 幀；K 個區塊解碼後得到 80 × K − 2 幀
+chunk_frames = 77
+frame_step = 80
+frame_offset = -2
+# 一段裡面會連續生成好幾個區塊（每個約 5 秒）。段越長交界越少，但中斷時要重做的也越多
+max_segment_seconds = 30
+min_segment_seconds = 3
+# 連續接續越久畫面越劣化（對比與銳利度逐漸過頭；實測連續約 25 秒還好，60 秒看得出來，180 秒已經不能用），
+# 所以預設每一段都重新從照片開始，段與段之間會跳接（只發生在換氣或段落交界處）。
+# 設成 2 以上：每幾段才重新開始一次，中間的段以上一段的尾端當動作參考接續；0：一路接續不重新開始
+reset_every = 1
+steps = 4
+shift = 8.0
+join_note = "Wan 2.2 S2V 連續接續越久畫面越劣化（對比與銳利度逐漸過頭），整首一路接續到後段會明顯失真；建議改用「定期改以原始照片起始」。"
+negative_prompt = "色调艳丽，过曝，静态，细节模糊不清，字幕，风格，作品，画作，画面，静止，整体发灰，最差质量，低质量，JPEG压缩残留，丑陋的，残缺的，多余的手指，画得不好的手部，画得不好的脸部，畸形的，毁容的，形态畸形的肢体，手指融合，静止不动的画面，杂乱的背景，三条腿，背景人很多，倒着走"
+default_prompt = "A singer stands in front of a studio microphone and sings with emotion, natural facial expressions, gentle body sway with the music, static camera."
+# 輸入頁用來預估時間：每 1 秒影片要算幾秒（RTX 5090 Laptop、24 GB 的實測值；換了顯示卡請自行調整）
+# 整首 182 秒實測 58 分鐘
+[engines.wan22_s2v.speed]
+"480p" = 19
+
+[engines.infinitetalk_native]
+label = "InfiniteTalk（原生版）"
+workflow = "infinitetalk_native"
+fps = 25
+# 一個視窗 81 幀，之後每個視窗與前面重疊 motion_frame 幀：K 個視窗得到 72 × (K − 1) + 81 幀
+frame_window_size = 81
+motion_frame = 9
+frame_step = 72
+frame_offset = 9
+max_segment_seconds = 60
+min_segment_seconds = 3
+reset_every = 4
+steps = 6
+default_prompt = "A singer stands in front of a studio microphone and sings with emotion, natural facial expressions, gentle body sway with the music, static camera."
+# 輸入頁用來預估時間：每 1 秒影片要算幾秒（RTX 5090 Laptop、24 GB 的實測值；換了顯示卡請自行調整）
+# 只測過一段 6 秒（339 秒，含載入模型），整首沒有跑過
+[engines.infinitetalk_native.speed]
+"480p" = 55
+
+[engines.ltx23]
+label = "LTX-2.3"
+workflow = "ltx23_ia2v"
+fps = 24
+# 單次生成的影格數限制：8 × k + 1
+frame_step = 8
+frame_offset = 1
+# 單段長度有限，所以一律切段；每段接續上一段的最後一幀
+max_segment_seconds = 10
+min_segment_seconds = 2
+# 動作幅度比較大，連續接續幾段後人物會明顯走樣（實測第 3 段起就看得出來），所以每段都要校正一次。
+# end_anchor = true：把原始照片當成該段最後一幀的引導，人物在段尾平順地回到照片的樣子，下一段再接續，畫面不跳。
+# end_anchor = false：改成下一段直接從原始照片起始（畫面會跳接，像換鏡頭）。
+reset_every = 1
+end_anchor = true
+anchor_workflow = "ltx23_ia2v_anchor"
+# 引導強度（0–1）。越高結尾越貼近照片；太低人物會慢慢走樣
+anchor_strength = 0.8
+decode_tile_size = 768
+oom_decode_tile_size = 512
+negative_prompt = "pc game, console game, video game, cartoon, childish, ugly, blurry, distorted face, extra fingers, subtitles, text"
+# 不描述唱歌的速度或節奏：嘴型由音訊決定，描述了反而會降低對嘴品質
+default_prompt = "A singer stands in front of a studio microphone and sings with emotion, natural facial expressions, gentle body sway with the music, static camera."
+
+# LTX-2.3 先以一半解析度生成再放大，長寬都必須是 64 的倍數；這兩組最接近 16:9
+# 輸入頁用來預估時間：每 1 秒影片要算幾秒（RTX 5090 Laptop、24 GB 的實測值；換了顯示卡請自行調整）
+# 整首 150 秒實測：480p 16.6 分鐘、720p 21.3 分鐘
+[engines.ltx23.speed]
+"480p" = 6.6
+"720p" = 8.5
+
+[engines.ltx23.resolutions.480p]
+width = 896
+height = 512
+
+[engines.ltx23.resolutions.720p]
+width = 1344
+height = 768
+
+[vocal_separation]
+# 需求清單；實際使用的工作流範本由清單中第一組齊全的 any_of 決定
+workflow = "vocal_separation"
+
+[align]
+# 強制對齊用的 Whisper 模型（首次使用會下載到使用者快取）
+model = "large-v3"
+# 執行對齊子程序的 Python；留白＝目前這個 Python
+python = ""
+# 秒；首次使用要下載約 3 GB 的模型，所以給得比較寬
+timeout = 3600
+# 一行的平均信心值低於這個值，視為沒對上，改用內插
+min_confidence = 0.15
+# 一行的長度短於「字數 × 這個秒數」視為沒對上
+min_seconds_per_char = 0.04
+# 一行之內相鄰兩個字相隔超過這個秒數，視為對齊模型把字放錯位置，只保留字數較多的那一群
+max_word_gap = 2.0
+# 信心值低於這個值的行，在字幕校對頁標示出來
+low_confidence = 0.4
+# 未對齊（內插）的行超過這個比例，視為歌詞沒唱完，會換 seed 重新生成歌曲
+max_unaligned_ratio = 0.15
+
+[subtitle_timing]
+# 字幕結尾最多延長幾秒、每則至少顯示幾秒、與下一則至少間隔幾秒
+tail = 0.3
+min_duration = 0.8
+gap = 0.05
+
+[silence]
+# 人聲音軌上低於這個音量且持續夠久，視為靜音間隙（供影片分段使用）
+threshold_db = -40.0
+min_seconds = 0.4
+
+[subtitle]
+# 字型必須支援繁體中文；找不到時改用 fallback_font
+font = "Noto Sans TC"
+fallback_font = "Microsoft JhengHei"
+# 字級與下邊距：佔影片高度的百分比，換解析度時字幕看起來一樣大
+size_percent = 7.5
+margin_percent = 6.0
+color = "#FFFFFF"
+outline_color = "#000000"
+# 描邊粗細：佔影片高度的百分比
+outline_percent = 0.55
+bold = true
+italic = false
+# 位置：bottom（置底）、top（置頂）、middle（畫面正中）
+position = "bottom"
+# 文字背後：none（只有描邊）、shadow（加陰影）、box（半透明底框）
+background = "none"
+back_color = "#000000"
+# 陰影或底框的不透明度（%）
+back_opacity = 60
+# 燒字幕時的編碼品質（libx264 CRF）
+crf = 18
+
+# 字幕樣式視窗的「套用範本」；只列出要改的項目，其餘維持視窗裡目前的值
+[[subtitle.presets]]
+name = "白字黑邊（預設）"
+color = "#FFFFFF"
+outline_color = "#000000"
+outline_percent = 0.55
+bold = true
+italic = false
+background = "none"
+
+[[subtitle.presets]]
+name = "黃字黑邊"
+color = "#FFE14D"
+outline_color = "#000000"
+outline_percent = 0.55
+bold = true
+italic = false
+background = "none"
+
+[[subtitle.presets]]
+name = "白字加陰影"
+color = "#FFFFFF"
+outline_color = "#000000"
+outline_percent = 0.3
+bold = true
+italic = false
+background = "shadow"
+back_color = "#000000"
+back_opacity = 70
+
+[[subtitle.presets]]
+name = "半透明底框"
+color = "#FFFFFF"
+outline_color = "#000000"
+outline_percent = 0.0
+bold = false
+italic = false
+background = "box"
+back_color = "#000000"
+back_opacity = 55
+
+[[subtitle.presets]]
+name = "KTV 白字藍邊"
+color = "#FFFFFF"
+outline_color = "#1E50D2"
+outline_percent = 0.8
+bold = true
+italic = false
+background = "none"
+
+# 字型名稱 → 字型檔的檔名樣式，用來確認字型有沒有安裝
+[subtitle.font_files]
+"Noto Sans TC" = "NotoSansTC*"
+"Noto Sans CJK TC" = "NotoSansCJK*"
+"Microsoft JhengHei" = "msjh*"
+"微軟正黑體" = "msjh*"

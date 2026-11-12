@@ -1,0 +1,35 @@
+{
+  "template": "infinitetalk_single.api.json",
+  "source": "kijai ComfyUI-WanVideoWrapper 的 InfiniteTalk 單人流程；節點與參數取自已在本機跑過的 Podcast 工具（podcast_maker.py 的 video_graph 單人模式）",
+  "params": {
+    "image": [{ "node": "1", "input": "image" }],
+    "audio": [{ "node": "5", "input": "audio" }],
+    "num_frames": [{ "node": "8", "input": "num_frames" }],
+    "fps": [
+      { "node": "8", "input": "fps" },
+      { "node": "20", "input": "frame_rate" }
+    ],
+    "width": [{ "node": "17", "input": "width" }],
+    "height": [{ "node": "17", "input": "height" }],
+    "positive_prompt": [{ "node": "16", "input": "positive_prompt" }],
+    "negative_prompt": [{ "node": "16", "input": "negative_prompt" }],
+    "seed": [{ "node": "18", "input": "seed" }],
+    "steps": [{ "node": "18", "input": "steps" }],
+    "blocks_to_swap": [{ "node": "11", "input": "blocks_to_swap" }],
+    "frame_window_size": [{ "node": "17", "input": "frame_window_size" }],
+    "motion_frame": [{ "node": "17", "input": "motion_frame" }],
+    "infinitetalk_model": [{ "node": "9", "input": "model" }],
+    "diffusion_model": [{ "node": "12", "input": "model" }],
+    "lora": [{ "node": "10", "input": "lora" }],
+    "vae": [{ "node": "13", "input": "model_name" }],
+    "text_encoder": [{ "node": "16", "input": "model_name" }],
+    "clip_vision": [{ "node": "14", "input": "clip_name" }],
+    "filename_prefix": [{ "node": "20", "input": "filename_prefix" }]
+  },
+  "outputs": {
+    "video": { "node": "20", "kind": "video" }
+  },
+  "unchecked_fields": {
+    "VHS_VideoCombine": ["pix_fmt", "crf", "save_metadata", "trim_to_audio"]
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "template": "ltx23_ia2v.api.json",
+  "source": "ComfyUI 官方範本 video_ltx2_3_ia2v（Video Generation (LTX-2.3) 子圖）轉為 API 格式。省略了提示詞強化（TextGenerateLTX2Prompt）與圖片縮放節點（照片由 APP 先裁成目標尺寸），存檔改用 VHS_VideoCombine；音訊只用來驅動畫面，不輸出模型重建的音軌",
+  "params": {
+    "image": [{ "node": "269", "input": "image" }],
+    "audio": [{ "node": "276", "input": "audio" }],
+    "audio_seconds": [{ "node": "332", "input": "duration" }],
+    "num_frames": [{ "node": "302", "input": "length" }],
+    "fps": [
+      { "node": "307", "input": "frame_rate" },
+      { "node": "341", "input": "frame_rate" }
+    ],
+    "width": [{ "node": "333", "input": "width" }],
+    "height": [{ "node": "333", "input": "height" }],
+    "half_width": [{ "node": "302", "input": "width" }],
+    "half_height": [{ "node": "302", "input": "height" }],
+    "positive_prompt": [{ "node": "306", "input": "text" }],
+    "negative_prompt": [{ "node": "314", "input": "text" }],
+    "seed": [{ "node": "286", "input": "noise_seed" }],
+    "checkpoint": [
+      { "node": "317", "input": "ckpt_name" },
+      { "node": "318", "input": "ckpt_name" },
+      { "node": "335", "input": "ckpt_name" }
+    ],
+    "text_encoder": [{ "node": "318", "input": "text_encoder" }],
+    "lora": [{ "node": "293", "input": "lora_name" }],
+    "upscaler": [{ "node": "313", "input": "model_name" }],
+    "decode_tile_size": [{ "node": "316", "input": "tile_size" }],
+    "filename_prefix": [{ "node": "341", "input": "filename_prefix" }]
+  },
+  "outputs": {
+    "video": { "node": "341", "kind": "video" }
+  },
+  "unchecked_fields": {
+    "VHS_VideoCombine": ["pix_fmt", "crf", "save_metadata", "trim_to_audio"]
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "template": "vocal_separation_melband.api.json",
+  "source": "kijai ComfyUI-MelBandRoFormer（MelBandRoFormerSampler 輸出 vocals、instruments）",
+  "params": {
+    "audio": [{ "node": "1", "input": "audio" }],
+    "model_name": [{ "node": "2", "input": "model_name" }],
+    "vocals_prefix": [{ "node": "5", "input": "filename_prefix" }],
+    "instrumental_prefix": [{ "node": "6", "input": "filename_prefix" }]
+  },
+  "outputs": {
+    "vocals": { "node": "5", "kind": "audio" },
+    "instrumental": { "node": "6", "kind": "audio" }
+  }
+}

@@ -1,0 +1,41 @@
+name = "主歌–導歌–副歌 ×2–尾奏"
+style_hint = "情緒逐段堆疊；導歌把情緒往上推，副歌釋放"
+rhyme = "主歌兩行一韻，副歌一韻到底"
+
+[[sections]]
+type = "verse"
+lines = 4
+chars_min = 7
+chars_max = 11
+
+[[sections]]
+type = "prechorus"
+lines = 2
+chars_min = 6
+chars_max = 10
+
+[[sections]]
+type = "chorus"
+lines = 4
+chars_min = 6
+chars_max = 10
+
+[[sections]]
+type = "verse"
+lines = 4
+chars_min = 7
+chars_max = 11
+
+[[sections]]
+type = "prechorus"
+repeat_of = 2
+
+[[sections]]
+type = "chorus"
+repeat_of = 3
+
+[[sections]]
+type = "outro"
+lines = 2
+chars_min = 5
+chars_max = 9

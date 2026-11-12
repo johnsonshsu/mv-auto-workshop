@@ -1,0 +1,50 @@
+# 曲風範本：輸入頁「曲風」下拉選單的選項，也可以在輸入頁直接輸入其他曲風。
+# hint 會一併交給 LLM，用來產生 YuE2 的風格描述。
+
+[[presets]]
+name = "抒情流行"
+hint = "pop ballad, piano and strings, slow tempo around 72 BPM, emotional"
+
+[[presets]]
+name = "City Pop"
+hint = "city pop, funky electric bass, bright synths, clean electric guitar, around 108 BPM, nostalgic and breezy"
+
+[[presets]]
+name = "民謠搖滾"
+hint = "folk rock, acoustic guitar, harmonica, warm drums, around 96 BPM, sincere"
+
+[[presets]]
+name = "輕快流行"
+hint = "upbeat pop, bright electric guitars, punchy drums, around 120 BPM, cheerful"
+
+[[presets]]
+name = "R&B"
+hint = "contemporary R&B, smooth electric piano, deep bass, laid-back groove around 84 BPM"
+
+[[presets]]
+name = "搖滾"
+hint = "pop rock, distorted guitars, driving drums, around 132 BPM, energetic"
+
+[[presets]]
+name = "電子舞曲"
+hint = "electronic dance pop, synth leads, four-on-the-floor kick, around 124 BPM"
+
+[[presets]]
+name = "爵士"
+hint = "vocal jazz, piano, upright bass, brushed drums, relaxed swing around 88 BPM"
+
+[[presets]]
+name = "J-pop"
+hint = "J-pop, bright synths, clean electric guitar, driving drums, around 128 BPM, uplifting and melodic"
+
+[[presets]]
+name = "歐美流行"
+hint = "contemporary Western pop, punchy drums, synth bass, layered synths, around 110 BPM, catchy hook"
+
+[[presets]]
+name = "粵語流行"
+hint = "Cantopop ballad, piano, strings, soft drums, around 76 BPM, heartfelt"
+
+[[presets]]
+name = "鄉村民謠"
+hint = "country folk, acoustic guitar, fiddle, light percussion, around 100 BPM, warm storytelling"

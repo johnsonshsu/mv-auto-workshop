@@ -1,0 +1,30 @@
+{
+  "label": "人聲分離",
+  "note": "any_of 依序檢查，第一組齊全為通過；只有後面的組齊全為「可執行但需降規」。每組的 workflow 是要使用的工作流範本名稱。",
+  "any_of": [
+    {
+      "label": "MelBandRoFormer",
+      "workflow": "vocal_separation_melband",
+      "nodes": ["MelBandRoFormerModelLoader", "MelBandRoFormerSampler", "LoadAudio", "SaveAudio"],
+      "custom_node_packs": ["ComfyUI-MelBandRoFormer（kijai）"],
+      "models": [
+        {
+          "pattern": "(?i)melband.?roformer",
+          "file": "MelBandRoformer_fp16.safetensors",
+          "folder": "models/diffusion_models",
+          "loader_node": "MelBandRoFormerModelLoader",
+          "loader_input": "model_name",
+          "param": "model_name",
+          "url": "https://huggingface.co/Kijai/MelBandRoFormer_comfy"
+        }
+      ]
+    },
+    {
+      "label": "AudioSeparation（Demucs）",
+      "workflow": "vocal_separation_demucs",
+      "nodes": ["AudioSeparation", "AudioCombine", "LoadAudio", "SaveAudio"],
+      "custom_node_packs": ["audio-separation-nodes-comfyui"],
+      "models": []
+    }
+  ]
+}

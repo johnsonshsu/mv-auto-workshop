@@ -1,0 +1,24 @@
+{
+  "label": "YuE2 歌曲生成",
+  "min_comfyui": "0.36.0",
+  "nodes": [
+    "CheckpointLoaderSimple",
+    "YuE2GenerateABC",
+    "YuE2GenerateMusic",
+    "EmptyYuE2LatentAudio",
+    "ConditioningZeroOut",
+    "KSampler",
+    "VAEDecodeAudio",
+    "SaveAudio"
+  ],
+  "custom_node_packs": [],
+  "models": [
+    {
+      "file": "yue2_3b_int8_convrot.safetensors",
+      "folder": "models/checkpoints",
+      "loader_node": "CheckpointLoaderSimple",
+      "loader_input": "ckpt_name",
+      "url": "https://huggingface.co/Comfy-Org/YuE2/resolve/main/checkpoints/yue2_3b_int8_convrot.safetensors"
+    }
+  ]
+}

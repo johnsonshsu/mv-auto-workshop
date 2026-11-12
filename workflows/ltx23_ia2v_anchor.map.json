@@ -1,0 +1,156 @@
+{
+  "template": "ltx23_ia2v_anchor.api.json",
+  "source": "ltx23_ia2v 加上結尾引導影像：用核心節點 LTXVAddGuide 把原始照片放在最後一幀（兩輪取樣各加一次，取樣後以 LTXVCropGuides 移除），讓每一段結束時回到原始照片的樣子，下一段再從這一幀接續",
+  "params": {
+    "image": [
+      {
+        "node": "269",
+        "input": "image"
+      }
+    ],
+    "audio": [
+      {
+        "node": "276",
+        "input": "audio"
+      }
+    ],
+    "audio_seconds": [
+      {
+        "node": "332",
+        "input": "duration"
+      }
+    ],
+    "num_frames": [
+      {
+        "node": "302",
+        "input": "length"
+      }
+    ],
+    "fps": [
+      {
+        "node": "307",
+        "input": "frame_rate"
+      },
+      {
+        "node": "341",
+        "input": "frame_rate"
+      }
+    ],
+    "width": [
+      {
+        "node": "333",
+        "input": "width"
+      }
+    ],
+    "height": [
+      {
+        "node": "333",
+        "input": "height"
+      }
+    ],
+    "half_width": [
+      {
+        "node": "302",
+        "input": "width"
+      }
+    ],
+    "half_height": [
+      {
+        "node": "302",
+        "input": "height"
+      }
+    ],
+    "positive_prompt": [
+      {
+        "node": "306",
+        "input": "text"
+      }
+    ],
+    "negative_prompt": [
+      {
+        "node": "314",
+        "input": "text"
+      }
+    ],
+    "seed": [
+      {
+        "node": "286",
+        "input": "noise_seed"
+      }
+    ],
+    "checkpoint": [
+      {
+        "node": "317",
+        "input": "ckpt_name"
+      },
+      {
+        "node": "318",
+        "input": "ckpt_name"
+      },
+      {
+        "node": "335",
+        "input": "ckpt_name"
+      }
+    ],
+    "text_encoder": [
+      {
+        "node": "318",
+        "input": "text_encoder"
+      }
+    ],
+    "lora": [
+      {
+        "node": "293",
+        "input": "lora_name"
+      }
+    ],
+    "upscaler": [
+      {
+        "node": "313",
+        "input": "model_name"
+      }
+    ],
+    "decode_tile_size": [
+      {
+        "node": "316",
+        "input": "tile_size"
+      }
+    ],
+    "filename_prefix": [
+      {
+        "node": "341",
+        "input": "filename_prefix"
+      }
+    ],
+    "anchor_image": [
+      {
+        "node": "342",
+        "input": "image"
+      }
+    ],
+    "anchor_strength": [
+      {
+        "node": "344",
+        "input": "strength"
+      },
+      {
+        "node": "345",
+        "input": "strength"
+      }
+    ]
+  },
+  "outputs": {
+    "video": {
+      "node": "341",
+      "kind": "video"
+    }
+  },
+  "unchecked_fields": {
+    "VHS_VideoCombine": [
+      "pix_fmt",
+      "crf",
+      "save_metadata",
+      "trim_to_audio"
+    ]
+  }
+}

@@ -1,0 +1,19 @@
+name = "短歌：主歌–副歌–副歌"
+style_hint = "簡單直接，一個畫面一個情緒"
+rhyme = "副歌一韻到底"
+
+[[sections]]
+type = "verse"
+lines = 4
+chars_min = 7
+chars_max = 11
+
+[[sections]]
+type = "chorus"
+lines = 4
+chars_min = 6
+chars_max = 10
+
+[[sections]]
+type = "chorus"
+repeat_of = 2

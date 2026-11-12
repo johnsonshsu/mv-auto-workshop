@@ -1,0 +1,122 @@
+{
+  "template": "wan22_s2v.api.json",
+  "source": "ComfyUI 官方範本 video_wan2_2_14B_s2v（4 步 LoRA 的那一組）轉為 API 格式。這裡只有第一個區塊（77 幀）與結尾的解碼；更長的片段由引擎在送出前接上 WanSoundImageToVideoExtend → KSampler → LatentConcat（官方範本的 Video S2V Extend 子圖），接續上一段時再加上 LoadVideo → GetVideoComponents 當作 ref_motion。存檔改用 VHS_VideoCombine",
+  "params": {
+    "image": [
+      {
+        "node": "11",
+        "input": "image"
+      }
+    ],
+    "audio": [
+      {
+        "node": "9",
+        "input": "audio"
+      }
+    ],
+    "width": [
+      {
+        "node": "12",
+        "input": "width"
+      }
+    ],
+    "height": [
+      {
+        "node": "12",
+        "input": "height"
+      }
+    ],
+    "chunk_frames": [
+      {
+        "node": "12",
+        "input": "length"
+      }
+    ],
+    "fps": [
+      {
+        "node": "34",
+        "input": "frame_rate"
+      }
+    ],
+    "positive_prompt": [
+      {
+        "node": "5",
+        "input": "text"
+      }
+    ],
+    "negative_prompt": [
+      {
+        "node": "6",
+        "input": "text"
+      }
+    ],
+    "seed": [
+      {
+        "node": "13",
+        "input": "seed"
+      }
+    ],
+    "steps": [
+      {
+        "node": "13",
+        "input": "steps"
+      }
+    ],
+    "shift": [
+      {
+        "node": "3",
+        "input": "shift"
+      }
+    ],
+    "diffusion_model": [
+      {
+        "node": "1",
+        "input": "unet_name"
+      }
+    ],
+    "lora": [
+      {
+        "node": "2",
+        "input": "lora_name"
+      }
+    ],
+    "text_encoder": [
+      {
+        "node": "4",
+        "input": "clip_name"
+      }
+    ],
+    "vae": [
+      {
+        "node": "7",
+        "input": "vae_name"
+      }
+    ],
+    "audio_encoder": [
+      {
+        "node": "8",
+        "input": "audio_encoder_name"
+      }
+    ],
+    "filename_prefix": [
+      {
+        "node": "34",
+        "input": "filename_prefix"
+      }
+    ]
+  },
+  "outputs": {
+    "video": {
+      "node": "34",
+      "kind": "video"
+    }
+  },
+  "unchecked_fields": {
+    "VHS_VideoCombine": [
+      "pix_fmt",
+      "crf",
+      "save_metadata",
+      "trim_to_audio"
+    ]
+  }
+}

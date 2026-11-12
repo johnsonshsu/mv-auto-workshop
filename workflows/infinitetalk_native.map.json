@@ -1,0 +1,122 @@
+{
+  "template": "infinitetalk_native.api.json",
+  "source": "ComfyUI 官方範本 video_wan2_1_infinitetalk 的 InfiniteTalk (Base Generation) 子圖轉為 API 格式，改成單人模式（single_speaker、wan2.1_infiniteTalk_single 模型修補檔）。這裡只有第一個視窗（81 幀）；更長的片段由引擎在送出前重複接上同一組節點，把前面所有畫面接到 previous_frames，並依 trim_image 去掉重疊的影格。存檔改用 VHS_VideoCombine",
+  "params": {
+    "image": [
+      {
+        "node": "11",
+        "input": "image"
+      }
+    ],
+    "audio": [
+      {
+        "node": "8",
+        "input": "audio"
+      }
+    ],
+    "width": [
+      {
+        "node": "12",
+        "input": "width"
+      }
+    ],
+    "height": [
+      {
+        "node": "12",
+        "input": "height"
+      }
+    ],
+    "window_frames": [
+      {
+        "node": "12",
+        "input": "length"
+      }
+    ],
+    "motion_frame": [
+      {
+        "node": "12",
+        "input": "motion_frame_count"
+      }
+    ],
+    "fps": [
+      {
+        "node": "34",
+        "input": "frame_rate"
+      }
+    ],
+    "positive_prompt": [
+      {
+        "node": "4",
+        "input": "text"
+      }
+    ],
+    "seed": [
+      {
+        "node": "16",
+        "input": "noise_seed"
+      }
+    ],
+    "steps": [
+      {
+        "node": "15",
+        "input": "steps"
+      }
+    ],
+    "diffusion_model": [
+      {
+        "node": "1",
+        "input": "unet_name"
+      }
+    ],
+    "lora": [
+      {
+        "node": "2",
+        "input": "lora_name"
+      }
+    ],
+    "text_encoder": [
+      {
+        "node": "3",
+        "input": "clip_name"
+      }
+    ],
+    "vae": [
+      {
+        "node": "6",
+        "input": "vae_name"
+      }
+    ],
+    "audio_encoder": [
+      {
+        "node": "7",
+        "input": "audio_encoder_name"
+      }
+    ],
+    "infinitetalk_model": [
+      {
+        "node": "10",
+        "input": "name"
+      }
+    ],
+    "filename_prefix": [
+      {
+        "node": "34",
+        "input": "filename_prefix"
+      }
+    ]
+  },
+  "outputs": {
+    "video": {
+      "node": "34",
+      "kind": "video"
+    }
+  },
+  "unchecked_fields": {
+    "VHS_VideoCombine": [
+      "pix_fmt",
+      "crf",
+      "save_metadata",
+      "trim_to_audio"
+    ]
+  }
+}
