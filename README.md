@@ -21,29 +21,101 @@
 
 - Windows 10/11 64 位元、NVIDIA 顯示卡
 - Python 3.11 以上
-- FFmpeg（需在 PATH 中）
-- ComfyUI Desktop v0.36.0 以上，並已安裝 YuE2 模型
+- FFmpeg（需在 PATH 中；`build.ps1` 會檢查，沒有安裝或無法執行時用 winget 自動安裝並加入 Path，也可依前置作業第 2 項手動安裝）
+- ComfyUI Desktop v0.36.0 以上與 Ollama（見下方前置作業）
+
+## 前置作業
+
+安裝本 APP 之前，先準備好 LLM 與 ComfyUI。這兩項沒備齊，APP 能啟動，但「環境檢查」會顯示不通過，製作也無法進行。
+
+### 1. 安裝 Ollama 並下載模型
+
+歌詞、風格描述與照片分析由本機 LLM 產生（預設供應商）。
+
+1. 安裝 [Ollama for Windows](https://ollama.com/download)，並確認它在背景執行（預設位址 `http://127.0.0.1:11434`）。
+2. 下載文字模型與視覺模型：
+
+   ```powershell
+   ollama pull qwen3.8:27b
+   ollama pull gemma4:12b
+   ```
+
+   `qwen3.8:27b` 產生歌詞與風格描述；`gemma4:12b` 用來看人像照片、產生影片提示詞。模型名稱可在 APP 設定頁或 `config\default.toml` 的 `[llm]` 修改。
+
+不想裝 Ollama 時，可改用 Claude API 或 OpenAI 相容端點（見 [LLM](#llm)）。
+
+### 2. 手動安裝 FFmpeg（也可交給 build.ps1 自動處理）
+
+`build.ps1` 找不到 FFmpeg 時會自動用 winget 安裝。想自己安裝，或沒有 winget，依下列步驟：
+
+1. **下載**：開啟 <https://www.gyan.dev/ffmpeg/builds/>，在「release builds」下載 `ffmpeg-release-full.7z`（或 `ffmpeg-release-essentials.zip`；`.7z` 需要 7-Zip 解壓縮）。
+2. **解壓縮**：解壓縮到固定的位置，例如 `C:\ffmpeg`，解壓後要有 `C:\ffmpeg\bin\ffmpeg.exe` 與 `C:\ffmpeg\bin\ffprobe.exe`。如果多了一層版本資料夾（例如 `C:\ffmpeg\ffmpeg-7.1-full_build\bin`），請記下實際的 `bin` 路徑。放好後不要再搬動。
+3. **加入系統 Path**：
+   1. 按 Windows 鍵，搜尋「編輯系統環境變數」並開啟。
+   2. 按「環境變數」。
+   3. 在下方「系統變數」找到 `Path`，選取後按「編輯」。
+   4. 按「新增」，貼上 `bin` 資料夾的完整路徑（例如 `C:\ffmpeg\bin`），按「確定」關閉所有視窗。系統變數需要系統管理員權限；只想給自己使用，可加在上方的「使用者變數」。
+
+   或以**系統管理員身分**開啟 PowerShell 執行（路徑請換成你的 `bin`）：
+
+   ```powershell
+   $bin = "C:\ffmpeg\bin"
+   [Environment]::SetEnvironmentVariable("Path", [Environment]::GetEnvironmentVariable("Path", "Machine") + ";$bin", "Machine")
+   ```
+4. **驗證**：**重新開啟**一個新的 PowerShell（已開著的視窗讀不到新的 Path），執行：
+
+   ```powershell
+   ffmpeg -version
+   ffprobe -version
+   ```
+
+   兩個都顯示版本資訊就完成了。顯示「無法辨識」代表路徑不對，或視窗沒有重新開啟。
+
+### 3. 安裝 ComfyUI Desktop 並啟動
+
+1. 安裝 [ComfyUI Desktop](https://www.comfy.org/download)（v0.36.0 以上），完成首次設定。
+2. **先啟動一個 ComfyUI 實例並保持執行**，本 APP 透過 `http://127.0.0.1:8188` 連線。連線位址可在 `config\default.toml` 修改。
+3. 使用 InfiniteTalk（外掛版）時，要在 ComfyUI Desktop 的啟動參數加上 `--disable-dynamic-vram` 後重新啟動，否則套用 LoRA 時 ComfyUI 會當掉。
+
+### 4. 補齊各工作流缺少的模型與節點
+
+每個工作流需要的節點、自訂節點套件與模型檔，各列在 `workflows\<名稱>.requires.json`。**最簡單的做法**：啟動 APP 後看「環境檢查」頁，缺什麼就會逐項列出，並附上下載位置與應放的資料夾。依下表補齊後，重新檢查直到顯示通過（`models\` 指 ComfyUI 的 models 資料夾）。
+
+| 功能 | 需要的自訂節點套件 | 主要模型檔（放進 `models\` 下的子資料夾） |
+| --- | --- | --- |
+| 歌曲生成（YuE2，必要） | 無 | `checkpoints`：`yue2_3b_int8_convrot.safetensors` |
+| 人聲分離（必要） | ComfyUI-MelBandRoFormer（kijai）。在「自訂節點管理器」搜尋 `MelBandRoFormer`，安裝並確認已啟用，再重新啟動 ComfyUI；沒有時改用 Demucs 節點 | `diffusion_models`：`MelBandRoformer_fp16.safetensors`（[Kijai/MelBandRoFormer_comfy](https://huggingface.co/Kijai/MelBandRoFormer_comfy)） |
+| InfiniteTalk（外掛版） | ComfyUI-WanVideoWrapper（kijai）、ComfyUI-VideoHelperSuite | `diffusion_models`：Wan2.1 I2V 14B 480p（fp8 KJ）與 InfiniteTalk Single（fp8 KJ）；`loras`：lightx2v I2V 480p；`vae`：Wan2_1_VAE_bf16；`text_encoders`：umt5-xxl-enc-bf16；`clip_vision`：clip_vision_h |
+| InfiniteTalk（原生版） | ComfyUI-VideoHelperSuite | `diffusion_models`：Wan2.1 I2V 14B 480p（fp8 KJ）；`model_patches`：wan2.1_infiniteTalk_single_fp16；`loras`：lightx2v I2V 480p；`text_encoders`：umt5_xxl_fp8_e4m3fn_scaled；`vae`：Wan2_1_VAE_bf16；`audio_encoders`：wav2vec2-chinese-base_fp16 |
+| LTX-2.3 | ComfyUI-VideoHelperSuite | `checkpoints`：ltx-2.3-22b-dev-fp8；`text_encoders`：gemma_3_12B_it_fp4_mixed；`loras`：ltx 2.3 distilled lora；`latent_upscale_models`：ltx-2.3-spatial-upscaler-x2 |
+| Wan 2.2 S2V | ComfyUI-VideoHelperSuite | `diffusion_models`：wan2.2_s2v_14B_fp8_scaled；`loras`：wan2.2_t2v_lightx2v_4steps_lora_v1.1_high_noise；`text_encoders`：umt5_xxl_fp8_e4m3fn_scaled；`vae`：wan_2.1_vae；`audio_encoders`：wav2vec2_large_english_fp16 |
+
+- 完整檔名與下載連結以 `workflows\*.requires.json` 為準。LTX-2.3 的檔案依 [ComfyUI 官方教學](https://docs.comfy.org/tutorials/video/ltx/ltx-2-3) 下載。
+- 本機檔名與清單不同但符合對應的檔名規則時，APP 會自動改用你本機的檔名。
+- 不需要四個引擎都裝：只補齊你要用的那一個，環境檢查會顯示「可用的對嘴引擎」。想先試，建議從一個引擎開始（比較見[如何選擇對嘴引擎](#如何選擇對嘴引擎開始前必讀)）。
+- 缺少自訂節點套件時，在 ComfyUI 的「自訂節點管理器」搜尋套件名稱（例如 `MelBandRoFormer`）安裝，並確認右下角的開關是啟用狀態，安裝後重新啟動 ComfyUI。
+- APP 不會修改 ComfyUI 的安裝內容，缺少的項目要自己下載。
 
 ## 安裝
 
-在專案資料夾內執行：
+依序執行：
 
 ```powershell
-py -3.11 -m venv .venv
-.\.venv\Scripts\python.exe -m pip install PySide6 httpx websocket-client keyring Pillow numpy soundfile pytest opencc-python-reimplemented
-.\.venv\Scripts\python.exe -m pip install torch torchaudio --index-url https://download.pytorch.org/whl/cu130
-.\.venv\Scripts\python.exe -m pip install stable-ts
+.\build.ps1                     # 1. 打包，產出 dist\MVAutoWorkshop
+cd dist\MVAutoWorkshop          # 2. 進入打包資料夾
+.\setup_align_env.ps1           # 3. 建立字幕對齊環境（只需一次，約 3 GB）
+.\MVAutoWorkshop.exe            # 4. 啟動 UI
 ```
 
-torch 與 stable-ts 用於字幕的強制對齊（約 3 GB）。第一次執行字幕階段時，還會下載 Whisper large-v3 模型（約 3 GB）到 `%USERPROFILE%\.cache\whisper`，只需下載一次。
+- 第 1 步會先檢查 FFmpeg（`ffmpeg`、`ffprobe`）。沒有安裝或無法執行時，用 winget 安裝 `Gyan.FFmpeg` 並加入 Path：以系統管理員身分執行會加入系統（全域）Path，否則只能加入使用者 Path 並顯示警告。已開啟的終端機要重新開啟才讀得到新的 Path。
+- 第 1 步找不到 `.venv` 時（例如剛 clone 專案）會自動建立並安裝所需套件，不必手動處理。
+- 第 3 步會在 `dist\MVAutoWorkshop\align-env` 安裝 torch 與 stable-ts。重新執行 `build.ps1` 不會刪除 `align-env`，不必重做。
+- 第一次執行字幕階段時，還會下載 Whisper large-v3 模型（約 3 GB）到 `%USERPROFILE%\.cache\whisper`，只需下載一次。
+- 重新打包前請先關閉執行中的 `MVAutoWorkshop.exe`。
 
 ## 執行
 
-先啟動 ComfyUI Desktop，再執行：
-
-```powershell
-.\.venv\Scripts\python.exe -m app.main
-```
+先啟動 ComfyUI Desktop，再執行 `dist\MVAutoWorkshop\MVAutoWorkshop.exe`。
 
 1. 按「＋ 新專案」輸入名稱。專案會建立在設定的專案資料夾（預設 `D:\MV專案`）。
 2. 選取專案後會自動做環境檢查，逐項顯示通過、需降規或不通過，以及補救方式。
@@ -369,25 +441,21 @@ Wan 2.2 S2V（`wan22_s2v`）與 InfiniteTalk 原生版（`infinitetalk_native`�
 .\build.ps1
 ```
 
-會安裝 PyInstaller 並產出 `dist\MVAutoWorkshop\`（約 185 MB），裡面有 `MVAutoWorkshop.exe`，以及可以直接編輯的 `config`、`workflows`、`prompts`。整個資料夾複製到別台電腦就能用。
+步驟見上方[安裝](#安裝)。`build.ps1` 會安裝 PyInstaller 並產出 `dist\MVAutoWorkshop\`（約 185 MB），裡面有 `MVAutoWorkshop.exe`，以及可以直接編輯的 `config`、`workflows`、`prompts`。
 
-字幕對齊用的 torch 與 stable-ts 太大（約 5 GB），沒有包進執行檔。在目標電腦的 `MVAutoWorkshop` 資料夾執行一次：
-
-```powershell
-.\setup_align_env.ps1
-```
-
-它會在旁邊建立 `align-env`（需要先安裝 Python 3.11 以上）。也可以改在 `config\default.toml` 的 `align.python` 填入已安裝 stable-ts 的 `python.exe`。沒有這個環境時，其他階段照常運作，字幕階段會提示要先執行這個腳本。
+要搬到別台電腦：複製整個 `MVAutoWorkshop` 資料夾，到目標電腦執行一次 `.\setup_align_env.ps1`（需先安裝 Python 3.11 以上）。torch 與 stable-ts 太大（約 5 GB），所以沒有包進執行檔。也可以改在 `config\default.toml` 的 `align.python` 填入已安裝 stable-ts 的 `python.exe`。沒有對齊環境時，其他階段照常運作，字幕階段會提示要先執行這個腳本。
 
 目標電腦同樣需要 ComfyUI、FFmpeg，以及（使用本機 LLM 時）Ollama。
 
 ## 測試
 
+- **環境檢查**：啟動 `MVAutoWorkshop.exe`，選取專案後會自動檢查顯示卡、記憶體、磁碟、FFmpeg、ComfyUI 與各模型節點，全部顯示「通過」就表示環境可用，並列出可用的對嘴引擎。
+- **測試工作流**（選用）：在同一頁按「送出測試工作流」，確認能用 YuE2 產生約 10 秒音樂（見[執行](#執行)）。
+- **自動化測試**（開發用，不需顯示卡，也不連真正的 ComfyUI，由 `tests/fake_comfy_server.py` 模擬）：
+
 ```powershell
 .\.venv\Scripts\python.exe -m pytest -q
 ```
-
-測試使用 `tests/fake_comfy_server.py` 模擬 ComfyUI，不需要顯示卡，也不會連到真正的 ComfyUI。
 
 ## 授權提醒
 
